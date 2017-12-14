@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators, NgForm } from '@angular/forms';
 import { User } from './user';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
@@ -9,8 +10,11 @@ import { User } from './user';
 export class HomeComponent implements OnInit {
   loginForm: FormGroup;
   user: User;
+  cats: any;
+  endpoint = 'https://us-central1-nickels-catalog.cloudfunctions.net/auth';
+  catelog = 'https://webquoin.com/catalog/build/json/';
 
-  constructor() {  }
+  constructor(private http: HttpClient) {  }
 
   ngOnInit() {
     this.loginForm = new FormGroup ({
@@ -21,15 +25,24 @@ export class HomeComponent implements OnInit {
         validators: [ Validators.required, Validators.minLength(3), Validators.maxLength(25)],
         updateOn: 'submit' })
     });
+    this.getCat();
   }
 
   onSubmit(loginForm, event) {
     if (this.loginForm.valid) {
       console.log(this.loginForm.value);
+      this.user = this.loginForm.value;
+
+    const data = {
+      username: this.user.username,
+      password: this.user.password
+      };
+    this.http.post(this.endpoint, data).subscribe(Response => console.log(Response));
     }
-    // https://plnkr.co/edit/IyF29oM1TyPpjU9ohEMc?p=preview
-    // https://www.toptal.com/angular-js/angular-4-forms-validation
-    // https://github.com/bradtraversy/angularfs/blob/master/src/app/components/add-item/add-item.component.ts
-    // https://www.youtube.com/watch?v=cwqeyOFcaoA
   }
+
+  getCat() {
+    this.cats = this.http.get(this.catelog + 'catalog.json');
+  }
+
 }
