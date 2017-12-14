@@ -17,5 +17,4 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
 exports.loginInfo = request.post({url:'http://www.testquoin.com/API/Authenticate', form: {Username:'Robert', Pwd:'rob2nickels'}}, function(err,httpResponse,body) { 
   // if (!err && httpResponse.statusCode == 200)
    httpResponse.send(body, httpResponse); 
-}  
- });
+});
