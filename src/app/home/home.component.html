@@ -1,0 +1,23 @@
+<div class="card">
+    <div class="card-image"></div>
+    <div class="card-content">
+      <span class="card-title">lets start this already</span>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm, $event)" novalidate>     
+        <div class="input-field inline">
+          <i class="material-icons prefix">account_circle</i>
+          <input id="first_name" type="text" class="validate" name="username" formControlName="username" required #username>
+          <label for="first_name" data-error="wrong" data-success="right">Username</label>
+          <div [hidden]="username.valid || !username.pristine" class="">Username is required</div>
+        </div>      
+        <div class="input-field inline">
+          <input id="password" type="password" class="validate" name="password" formControlName="password" required #password onkeydown="if(event.keyCode == 13) document.getElementById('submit').click()">
+          <label for="password">Password</label>
+          <div [hidden]="password.valid || !password.pristine" class="">Username is required</div>
+        </div>
+        <button class="btn waves-effect waves-light" type="submit" name="action">
+          <i class="material-icons right">send</i>
+        </button>
+        
+      </form>
+    </div>
+</div>
