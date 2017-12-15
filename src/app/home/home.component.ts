@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators, NgForm } from '@angular/forms';
 import { User } from './user';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { stringify } from '@angular/core/src/util';
 
 @Component({
   selector: 'app-home',
@@ -42,7 +43,8 @@ export class HomeComponent implements OnInit {
   }
 
   getCat() {
-    this.cats = this.http.get(this.catelog + 'catalog.json');
+    this.http.jsonp(this.catelog + 'catelog.json?output=json', 'callback')
+    .subscribe(data => console.log(data));
   }
 
 }
