@@ -23,6 +23,7 @@ import { HeaderComponent } from './ui/header/header.component';
 import { FooterComponent } from './ui/footer/footer.component';
 import { SidebarComponent } from './ui/sidebar/sidebar.component';
 import { HomeComponent } from './home/home.component';
+import { FirestoreService } from './services/firestore.service';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,7 @@ import { HomeComponent } from './home/home.component';
     HttpClientModule,
     HttpClientJsonpModule
   ],
-  providers: [],
+  providers: [ FirestoreService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

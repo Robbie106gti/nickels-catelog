@@ -1,0 +1,45 @@
+
+
+  function userInformation(body) {
+    if(!body) return null;
+    let dbUsers = admin.firestore().collection('users');
+
+    let user = {
+      fullName: body.FirstName + ' ' + body.LastName,
+      firstName: body.FirstName,
+      lastName: body.LastName,
+      displayName: body.DisplayName,
+      username: body.UserName,
+      email: body.Email,
+      class: body.DealerID,
+      dealerName: body.DealerName,
+    };
+
+    if(body.DealerID === 'NICKELSM') {
+      user.roles = 
+      {
+        reader: true,
+        nickels: true,
+        writer: false,
+        admin: false,
+      }
+    }
+    if(body.DealerID !== 'NICKELSM') {
+      user.roles = 
+      {
+        reader: true,
+        nickels: false,
+        writer: false,
+        admin: false,
+      }
+    }
+
+    let userStore = dbUsers.doc(body.Email).get.then(doc => {
+      if(doc.data) {
+        return userStore = compare(body, doc.data());
+      }
+    });
+    if(!userStore) {
+      dbUsers.doc(body.Email).create(user);
+    }
+  }
