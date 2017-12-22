@@ -43,3 +43,72 @@
       dbUsers.doc(body.Email).create(user);
     }
   }
+
+
+  
+
+  setImages(a) {
+    const attached = a.map(el => {
+      const item = {
+        title: el.title,
+        video: el.video,
+        tags: el.tags
+      };
+      return item;
+    });
+    return attached;
+  }
+
+  setPar(a) {
+    const attached = a.map(el => {
+      const item = {
+        class: el.class,
+        text: el.text
+      };
+      return item;
+    });
+    return attached;
+  }
+
+  getHeights(a) {
+    const attached = a.map(el => {
+      const item = {
+        height: el.height
+      };
+      return item;
+    });
+    return attached;
+  }
+
+  get timestamp() {
+    return firebase.firestore.FieldValue.serverTimestamp();
+  }
+
+  getCat() {
+    this.http.get('../../assets/json/wardrobe cabinets.json')
+    .subscribe(data => {
+      this.cats = data['Wardrobe Cabinets'];
+      console.log(this.cats.length, this.cats);
+      let n = 1;
+      this.cats.forEach(cat => {
+        const crudInfo = {
+            createdAt: this.timestamp,
+            updatedAt: this.timestamp,
+            updateBy: 'Robert Leeuwerink',
+            createdBy: 'Robert Leeuwerink'
+        };
+        const ntitle = cat.title.split(': ');
+        const obj = {
+          title: ntitle[1],
+          code: cat.code,
+          image: cat.image,
+          tags: cat.tags,
+          heights: this.getHeights(cat.attached)
+        };
+        console.log(cat, obj);
+        // this.db.collection('/structure/cabinets/wardrobe cabinets').add({ crudInfo, ...obj });
+        console.log(n + ' of ' + this.cats.length);
+        n++;
+      });
+    });
+  }
