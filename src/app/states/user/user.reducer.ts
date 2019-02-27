@@ -19,8 +19,11 @@ export function userReducer(
 
     switch (action.type) {
 
-    case userActions.GET_USER:
-    return { ...state, loading: true };
+    case userActions.GET_COOKIE:
+      return { ...state, loading: true };
+
+      case userActions.GET_USER:
+        return { ...state, loading: true };
 
     case userActions.AUTHENTICATED:
         return { ...state, ...action.payload, loading: false };

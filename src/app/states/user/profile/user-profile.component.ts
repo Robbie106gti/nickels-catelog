@@ -12,10 +12,9 @@ export class UserProfileComponent implements OnInit {
 
   user: Observable<any>;
 
-  constructor(private store: Store<fromUser.State>) { }
+  constructor() { }
 
   ngOnInit() {
-    this.user = this.store.select(fromUser.selectAll);
   }
 
 }

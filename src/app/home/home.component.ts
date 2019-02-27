@@ -20,7 +20,6 @@ export class HomeComponent implements OnInit {
   constructor(private userService: UserEffects) {  }
 
   ngOnInit() {
-    this.userService.checkCookie();
     this.loginForm = new FormGroup ({
       username: new FormControl( '', {
         validators: [ Validators.required, Validators.minLength(3), Validators.maxLength(25)],
@@ -42,7 +41,8 @@ export class HomeComponent implements OnInit {
       username: this.user.username,
       password: this.user.password
       };
-    // this.userService.login(data);
+      console.log(data);
+    // this.userService.webquoin(data);
     }
   }
 }

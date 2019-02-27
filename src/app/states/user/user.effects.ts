@@ -6,10 +6,7 @@ import { Actions, Effect } from '@ngrx/effects';
 import { User, IUser } from './user';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AngularFirestore,
-  AngularFirestoreCollection,
-  AngularFirestoreDocument
-} from 'angularfire2/firestore';
+import { AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firestore';
 
 import { switchMap, mergeMap, map } from 'rxjs/operators';
 import 'rxjs/add/observable/fromPromise';
@@ -41,28 +38,67 @@ export class UserEffects {
   // ************************************************
 
 @Effect()
-  getUser$: Observable<Action> = this.actions$.ofType(actions.GET_USER)
-    .map((action: actions.GetUser) => {
-      let cookie = this.getCookie('username');
-        if (cookie !== '') {
+getCookie$: Observable<Action> = this.actions$.ofType(actions.GET_COOKIE)
+  .map((action: actions.GetCookie) => {
+    let cookie = this.getCookie('username');
+      if (cookie !== '') {
+          /// User logged in
+          cookie = JSON.parse(cookie);
+          return this.userCheck(cookie);
+      } else {
+          /// User not logged in
+          return null;
+      }
+  })
+  .map(res => {
+      if (res !== null) {
+          /// User logged in
+          console.log(this.iUser);
+          return new actions.Authenticated(this.iUser);
+      } else {
+          /// User not logged in
+          console.log('res is null' + res);
+          return new actions.NotAuthenticated();
+      }
+  });
+
+  @Effect()
+    getUser$: Observable<Action> = this.actions$.ofType(actions.GET_USER)
+      .map((action: actions.GetUser) => {
+        let cookie = this.getCookie('username');
+          if (cookie !== '') {
+              /// User logged in
+              cookie = JSON.parse(cookie);
+              this.userCheck(cookie);
+              let id;
+              this.iUser.subscribe(obj => {
+                console.log(obj);
+                id = obj;
+              });
+              if (id.email) {
+                return id;
+              }
+          } else {
+              /// User not logged in
+              return null;
+          }
+      })
+      .map(res => {
+        if (res !== null) {
             /// User logged in
-            cookie = JSON.parse(cookie);
-            cookie = extend(cookie, action);
-            console.log(cookie);
-            return new actions.Authenticated(cookie);
+            console.log(res);
+            return new actions.Authenticated(res);
         } else {
             /// User not logged in
+            console.log('res is null' + res);
             return new actions.NotAuthenticated();
         }
-    });
+      });
 
 /** Login */
 @Effect()
 login$: Observable<Action> = this.actions$.ofType(actions.LOGIN)
   .map((action: actions.Login) => action.payload)
-  .switchMap(payload => {
-      return this.webquoin(payload);
-  })
   .map( credential => {
       // successful login
       return new actions.GetUser();
@@ -84,17 +120,23 @@ constructor(
     private actions$: Actions,
     private store: Store<AppState>,
     private http: HttpClient,
-    private db: AngularFirestore
+    private afs: AngularFirestore
   ) { }
 
-  login(): Observable<User> {
-    this.store.dispatch(new actions.Login());
+  login(obj): Observable<User> {
+    this.store.dispatch(new actions.Login(obj));
     return this.user$;
   }
 
   logout(): Observable<User> {
     this.store.dispatch(new actions.Logout());
     return this.user$;
+  }
+
+  userCheck(obj) {
+    if (!obj.email) { return ''; }
+    this.iUser = this.afs.doc<IUser>(`users/${obj['email']}`).valueChanges();
+    return this.iUser;
   }
 
   webquoin(userlogin) {
@@ -119,9 +161,8 @@ constructor(
           }
         };
         this.setCookie(obj, 7);
-        return obj;
+        this.userCheck(obj);
     });
-    return Observable.fromPromise(webq);
  }
 
   trimit(str) {

@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
 import { User } from './user';
 
+export const GET_COOKIE             = '[Auth] Get cookie';
 export const GET_USER               = '[Auth] Get user';
 export const AUTHENTICATED          = '[Auth] Authenticated';
 export const NOT_AUTHENTICATED      = '[Auth] Not Authenticated';
@@ -11,6 +12,10 @@ export const LOGOUT                 = '[Auth] Logout';
 export const AUTH_ERROR             = '[Auth] Error';
 
 /// Get User AuthState
+export class GetCookie implements Action {
+    readonly type = GET_COOKIE;
+    constructor(public payload?: any) {}
+}
 export class GetUser implements Action {
     readonly type = GET_USER;
     constructor(public payload?: any) {}
@@ -45,6 +50,7 @@ export class Logout implements Action {
 
 export type All
 = GetUser
+| GetCookie
 | Authenticated
 | NotAuthenticated
 | Login
